@@ -16,8 +16,8 @@ export default function Sidebar() {
       >
         Your Company
       </div>
-      <div className="w-full rounded-md flex grow flex-col justify-between space-y-3">
-        <nav className="space-y-1">
+      <div className="w-full rounded-md flex grow h-screen flex-col justify-between space-y-3">
+        <nav className="space-y-1 flex flex-col h-full">
           <Link
             href="/dashboard"
             className="flex h-10 hover:bg-neutral-300 items-center justify-start rounded-md p-3 text-black"
@@ -26,31 +26,31 @@ export default function Sidebar() {
             <span className="font-normal">Home</span>
           </Link>
           <Link
-            href="/products"
+            href="#"
             className="flex h-10 hover:bg-neutral-300 items-center justify-start rounded-md p-3 text-black"
           >
             <PackageOpen  size={18} className="mr-2 text-black" />
             <span className="font-normal">Products</span>
           </Link>
           <Link
-            href="/analytics"
+            href="#"
             className="flex h-10 hover:bg-neutral-300 items-center justify-start rounded-md p-3 text-black"
           >
            <ChartNoAxesColumn size={18} className="mr-2 text-black" />
             <span className="font-normal">Analytics</span>
           </Link>
+          
           <div className="pt-4">
             <Link
-              href="/create-store"
+              href="#"
               className="flex h-10 hover:bg-neutral-300 items-center justify-start rounded-md p-3 text-black"
             >
               <Plus size={18} className="mr-2 text-black" />
               <span className="font-normal">Create your first store</span>
             </Link>
           </div>
+          <div className='flex-grow'></div>
         </nav>
-        <div className="flex grow"></div>
-        
       </div>
     </div>
   );
