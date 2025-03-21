@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 function page() {
   return (
     <div className='bg-purple-500 flex flex-grow pt-12 justify-center'>
-      <div className="space-y-6">
+      <div className="space-y-6 p-9">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">Good Morning</h1>
