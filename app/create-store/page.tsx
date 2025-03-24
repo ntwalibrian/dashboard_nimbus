@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   ArrowLeft,
   Check,
   ArrowRight,
   ArrowLeft as StepBack,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -18,25 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-// Add a style tag to handle the dropdown portal styling globally
-const GlobalStyles = () => (
-  <style jsx global>{`
-    .select-content-portal {
-      background-color: white !important;
-      z-index: 9999 !important;
-    }
-  `}</style>
-);
 
 export default function CreateStore() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -50,6 +34,8 @@ export default function CreateStore() {
   });
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const totalSteps = 6;
 
   const updateFormData = (field: string, value: string) => {
@@ -97,19 +83,22 @@ export default function CreateStore() {
     }
   };
 
-  // Add portal root ref
-  useEffect(() => {
-    // Create a specific styling for all select portals
-    document
-      .querySelectorAll("[data-radix-popper-content-wrapper]")
-      .forEach((el) => {
-        el.classList.add("select-content-portal");
-      });
-  }, [currentStep]);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const toggleLocationDropdown = () =>
+    setLocationDropdownOpen(!locationDropdownOpen);
+
+  const selectCategory = (category: string, displayName: string) => {
+    updateFormData("storeCategory", displayName);
+    setDropdownOpen(false);
+  };
+
+  const selectLocation = (location: string, displayName: string) => {
+    updateFormData("storeLocation", displayName);
+    setLocationDropdownOpen(false);
+  };
 
   return (
     <div className="absolute inset-0 bg-cream overflow-auto">
-      <GlobalStyles />
       <div className="w-full max-w-3xl mx-auto p-6 md:p-8 lg:p-10">
         <Link
           href="/dashboard"
@@ -134,7 +123,7 @@ export default function CreateStore() {
             </div>
           </CardHeader>
 
-          <CardContent className="pt-6 relative z-10">
+          <CardContent className="pt-6">
             {/* Step 1: Store Name */}
             {currentStep === 1 && (
               <div className="space-y-4 min-h-[200px]">
@@ -157,6 +146,7 @@ export default function CreateStore() {
                     variant="outline"
                     onClick={checkAvailability}
                     disabled={!formData.storeName || isCheckingAvailability}
+                    className="bg-white/80 hover:bg-white"
                   >
                     {isCheckingAvailability
                       ? "Checking..."
@@ -185,45 +175,107 @@ export default function CreateStore() {
                   <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
-                  <select
-                    id="storeCategory"
-                    value={formData.storeCategory}
-                    onChange={(e) =>
-                      updateFormData("storeCategory", e.target.value)
-                    }
-                    className="w-full p-2 pl-3 pr-10 bg-white/80 rounded-md border border-input text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  <button
+                    onClick={toggleDropdown}
+                    className="w-full bg-white/80 backdrop-blur-md border border-gray-300 rounded-md p-2 flex justify-between items-center"
                   >
-                    <option value="" disabled>
-                      Select a category
-                    </option>
-                    <option value="fashion">Fashion & Apparel</option>
-                    <option value="electronics">Electronics & Gadgets</option>
-                    <option value="home">Home & Furniture</option>
-                    <option value="beauty">Beauty & Personal Care</option>
-                    <option value="health">Health & Wellness</option>
-                    <option value="food">Food & Groceries</option>
-                    <option value="books">Books & Media</option>
-                    <option value="toys">Toys & Games</option>
-                    <option value="sports">Sports & Outdoors</option>
-                    <option value="jewelry">Jewelry & Accessories</option>
-                    <option value="art">Art & Collectibles</option>
-                    <option value="other">Other</option>
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </div>
+                    <span>{formData.storeCategory || "Select a category"}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                  {dropdownOpen && (
+                    <ul className="absolute z-10 w-full bg-white/80 backdrop-blur-md border border-gray-300 rounded-md mt-1 shadow-lg max-h-48 overflow-y-auto">
+                      <li
+                        onClick={() =>
+                          selectCategory("fashion", "Fashion & Apparel")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Fashion & Apparel
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("electronics", "Electronics & Gadgets")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Electronics & Gadgets
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("home", "Home & Furniture")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Home & Furniture
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("beauty", "Beauty & Personal Care")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Beauty & Personal Care
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("health", "Health & Wellness")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Health & Wellness
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("food", "Food & Groceries")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Food & Groceries
+                      </li>
+                      <li
+                        onClick={() => selectCategory("books", "Books & Media")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Books & Media
+                      </li>
+                      <li
+                        onClick={() => selectCategory("toys", "Toys & Games")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Toys & Games
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("sports", "Sports & Outdoors")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Sports & Outdoors
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("jewelry", "Jewelry & Accessories")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Jewelry & Accessories
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectCategory("art", "Art & Collectibles")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Art & Collectibles
+                      </li>
+                      <li
+                        onClick={() => selectCategory("other", "Other")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Other
+                      </li>
+                    </ul>
+                  )}
                 </div>
               </div>
             )}
@@ -259,41 +311,59 @@ export default function CreateStore() {
                   <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
-                  <select
-                    id="storeLocation"
-                    value={formData.storeLocation}
-                    onChange={(e) =>
-                      updateFormData("storeLocation", e.target.value)
-                    }
-                    className="w-full p-2 pl-3 pr-10 bg-white/80 rounded-md border border-input text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  <button
+                    onClick={toggleLocationDropdown}
+                    className="w-full bg-white/80 backdrop-blur-md border border-gray-300 rounded-md p-2 flex justify-between items-center"
                   >
-                    <option value="" disabled>
-                      Select a country/region
-                    </option>
-                    <option value="us">United States</option>
-                    <option value="ca">Canada</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="au">Australia</option>
-                    <option value="de">Germany</option>
-                    <option value="fr">France</option>
-                    <option value="jp">Japan</option>
-                    <option value="other">Other</option>
-                  </select>
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                  </div>
+                    <span>
+                      {formData.storeLocation || "Select a country/region"}
+                    </span>
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                  {locationDropdownOpen && (
+                    <ul className="absolute z-10 w-full bg-white/80 backdrop-blur-md border border-gray-300 rounded-md mt-1 shadow-lg max-h-48 overflow-y-auto">
+                      <li
+                        onClick={() => selectLocation("kgl", "Kigali City")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Kigali City
+                      </li>
+                      <li
+                        onClick={() => selectLocation("wp", "Western Province")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Western Province
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectLocation("sp", "Southern Province")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Southern Province
+                      </li>
+                      <li
+                        onClick={() =>
+                          selectLocation("np", "Northern Province")
+                        }
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Northern Province
+                      </li>
+                      <li
+                        onClick={() => selectLocation("ep", "Eastern Province")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Eastern Province
+                      </li>
+                      <li
+                        onClick={() => selectLocation("other", "Other")}
+                        className="p-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Other
+                      </li>
+                    </ul>
+                  )}
                 </div>
               </div>
             )}
@@ -382,7 +452,10 @@ export default function CreateStore() {
                 Next <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             ) : (
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => (window.location.href = "/studio")}
+              >
                 Create Store
               </Button>
             )}
