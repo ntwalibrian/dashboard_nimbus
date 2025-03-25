@@ -26,7 +26,7 @@ export default function Sidebar() {
             <span className="font-normal">Home</span>
           </Link>
           <Link
-            href="#"
+            href="/dashboard/products"
             className="flex h-10 hover:bg-neutral-300 items-center justify-start rounded-md p-3 text-black"
           >
             <PackageOpen  size={18} className="mr-2 text-black" />

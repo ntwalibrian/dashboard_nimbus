@@ -1,5 +1,4 @@
 "use client"
-import Link from "next/link"
 import { Bell, Search, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -7,10 +6,9 @@ import { Input } from "@/components/ui/input"
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b ">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 w-full ">
+      <div className="container flex h-16 items-center justify-between pr-4 sm:pr-6">
         
-
         <div className="relative flex flex-1 items-center px-4 mx-4">
           <div className="flex w-full max-w-sm items-center space-x-2">
             <div className="relative flex-1">

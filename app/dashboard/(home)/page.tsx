@@ -86,7 +86,7 @@ function page() {
                 href="/create-store"
                 className="flex items-center gap-4 w-full"
               >
-                <div className="text-blue-500 flex items-center pt-0.5">
+                <div className="text-blue-500 flex items-center px-2 pt-0.5">
                   <Plus className="h-5 w-5" />
                 </div>
                 <div>
