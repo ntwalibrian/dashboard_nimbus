@@ -83,24 +83,26 @@ export default function Studio() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Minimal Store Template */}
-            <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 bg-background/60 backdrop-blur-md border-none">
-              <CardHeader>
-                <div className="aspect-video rounded-md mb-4 overflow-hidden">
-                  <Image
-                    src={MinimalTemplate}
-                    alt="Minimal Store Template"
-                    className="object-cover w-full h-full"
-                    priority
-                  />
-                </div>
-                <CardTitle>Minimal Store</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Clean and modern design perfect for any product type.
-                </p>
-              </CardContent>
-            </Card>
+            <Link href="/studio/edit">
+              <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 bg-background/60 backdrop-blur-md border-none">
+                <CardHeader>
+                  <div className="aspect-video rounded-md mb-4 overflow-hidden">
+                    <Image
+                      src={MinimalTemplate}
+                      alt="Minimal Store Template"
+                      className="object-cover w-full h-full"
+                      priority
+                    />
+                  </div>
+                  <CardTitle>Minimal Store</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Clean and modern design perfect for any product type.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
             {/* Commented out templates
             <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 bg-background/60 backdrop-blur-md border-none">
