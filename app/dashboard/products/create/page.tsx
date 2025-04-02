@@ -104,42 +104,43 @@ export default function CreateProduct() {
 
   return (
     <div
-      className="max-w-4xl mx-auto h-auto min-h-fit p-6 bg-white
+      className="max-w-7xl mx-auto h-auto min-h-fit p-6 bg-white
      rounded-3xl"
     >
       <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block mb-2">Product Name</label>
-          <Input name="name" required placeholder="Enter product name" />
-        </div>
+      <form onSubmit={handleSubmit}  className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+        <div className="space-y-6">
+          <div>
+            <label className="block mb-2">Product Name</label>
+            <Input name="name" required placeholder="Enter product name" />
+          </div>
 
-        <div>
-          <label className="block mb-2">Description</label>
-          <Textarea
-            name="description"
-            required
-            placeholder="Enter product description"
-            rows={4}
-          />
-        </div>
+          <div>
+            <label className="block mb-2">Description</label>
+            <Textarea
+              name="description"
+              required
+              placeholder="Enter product description"
+              rows={4}
+            />
+          </div>
 
-        <div>
-          <label className="block mb-2">Tags</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              "vegetables",
-              "fruits",
-              "meat",
-              "dairy",
-              "grains",
-              "beverages",
-              "snacks",
-            ].map((tag) => (
-              <div
-                key={tag}
-                className={`
+          <div>
+            <label className="block mb-2">Tags</label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                "vegetables",
+                "fruits",
+                "meat",
+                "dairy",
+                "grains",
+                "beverages",
+                "snacks",
+              ].map((tag) => (
+                <div
+                  key={tag}
+                  className={`
                   relative flex items-center rounded-3xl border p-2 cursor-pointer
                   ${
                     selectedTags.includes(tag)
@@ -147,49 +148,53 @@ export default function CreateProduct() {
                       : "border-white hover:border-primary/50"
                   }
                 `}
-                onClick={() => {
-                  setSelectedTags((prev) =>
-                    prev.includes(tag)
-                      ? prev.filter((t) => t !== tag)
-                      : [...prev, tag]
-                  );
-                }}
-              >
-                <div className="flex w-full items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="text-sm font-medium capitalize">
-                      {tag}
-                    </span>
+                  onClick={() => {
+                    setSelectedTags((prev) =>
+                      prev.includes(tag)
+                        ? prev.filter((t) => t !== tag)
+                        : [...prev, tag]
+                    );
+                  }}
+                >
+                  <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium capitalize">
+                        {tag}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              Click multiple tags to select them
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
-            Click multiple tags to select them
-          </p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2">Price per Unit</label>
+              <Input
+                name="price"
+                type="number"
+                required
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2">Unit</label>
+              <Input
+                name="unit"
+                required
+                placeholder="e.g., kg, piece, dozen"
+              />
+            </div>
+          </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2">Price per Unit</label>
-            <Input
-              name="price"
-              type="number"
-              required
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2">Unit</label>
-            <Input name="unit" required placeholder="e.g., kg, piece, dozen" />
-          </div>
-        </div>
-
-        <div>
+        <div className="space-y-6">
           <label className="block mb-2">Product Images (up to 7)</label>
           <ImageUpload
             value={images}
