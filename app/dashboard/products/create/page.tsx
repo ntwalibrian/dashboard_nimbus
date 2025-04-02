@@ -11,6 +11,7 @@ export default function CreateProduct() {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // const convertBlobToBase64 = async (blobUrl: string): Promise<string> => {
   //   try {
@@ -74,6 +75,7 @@ export default function CreateProduct() {
       tags: selectedTags,
       price: parseFloat(formData.get("price") as string),
       unit: formData.get("unit"),
+      stock: parseInt(formData.get("stock") as string),
       images: imageUrls,
     };
 
@@ -87,14 +89,20 @@ export default function CreateProduct() {
             name: formData.get("name"),
             description: formData.get("description"),
             images: imageUrls,
+            stock: parseInt(formData.get("stock") as string),
+            price: parseInt(formData.get("price") as string),
+            unit: formData.get("unit"),
           },
         ])
         .select();
 
       if (error) throw error;
 
-      // Redirect to products page or show success message
-      window.location.href = "/dashboard/products";
+      // Show success message and redirect after a delay
+      setShowSuccess(true);
+      setTimeout(() => {
+        window.location.href = "/dashboard/products";
+      }, 2000);
     } catch (error) {
       console.error("Error creating product:", error);
     } finally {
@@ -103,10 +111,20 @@ export default function CreateProduct() {
   };
 
   return (
-    <div
-      className="max-w-7xl mx-auto mb-auto mt-auto h-auto min-h-fit p-6 bg-white
-     rounded-3xl"
-    >
+    <div className="max-w-7xl mx-auto mb-auto mt-auto h-auto min-h-fit p-6 bg-white rounded-3xl relative">
+      {showSuccess && (
+        <div className="absolute top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <span>Product created successfully! Redirecting...</span>
+        </div>
+      )}
+
       <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
 
       <form
@@ -196,6 +214,18 @@ export default function CreateProduct() {
               />
             </div>
           </div>
+
+          <div>
+            <label className="block mb-2">Stock</label>
+            <Input
+              name="stock"
+              type="number"
+              required
+              min="0"
+              placeholder="Enter stock quantity"
+            />
+          </div>
+
           <div className="flex-grow"></div>
           <Button type="submit" className="w-full">
             {loading ? "Creating..." : "Create Product"}

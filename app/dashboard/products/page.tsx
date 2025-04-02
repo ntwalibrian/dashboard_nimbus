@@ -59,10 +59,17 @@ function ProductCard({ product }: { product: Product }) {
         <div className="space-y-2">
           <div className="flex justify-between items-start">
             <h3 className="font-semibold text-lg">{product.name}</h3>
-            <Badge 
+            <Badge
               variant="secondary"
-              className={product.status === "In Stock" ? "bg-green-500 hover:bg-green-600 cursor-pointer" : "bg-red-500 hover:bg-red-600 cursor-pointer"}
-            > {product.status} </Badge>
+              className={
+                product.status === "In Stock"
+                  ? "bg-green-500 hover:bg-green-600 cursor-pointer"
+                  : "bg-red-500 hover:bg-red-600 cursor-pointer"
+              }
+            >
+              {" "}
+              {product.status}{" "}
+            </Badge>
           </div>
           <p className="font-medium text-lg text-primary">${product.price}</p>
           <p className="text-sm text-gray-500 line-clamp-2">
