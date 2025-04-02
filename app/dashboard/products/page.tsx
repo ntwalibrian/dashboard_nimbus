@@ -46,7 +46,7 @@ const sampleProducts = [
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow flex-grow basis-[280px] max-w-[300px] h-[400px]">
+    <Card className="hover:shadow-lg transition-shadow w-full max-w-[300px] h-[400px]">
       <CardContent className="px-4 h-full">
         <div className="relative w-full h-[150px] mb-4 aspect-[4/3]">
           <Image
@@ -68,12 +68,10 @@ function ProductCard({ product }: { product: Product }) {
                   : "bg-red-500 hover:bg-red-600 cursor-pointer"
               }
             >
-              {product.stock > 0
-                ? `In Stock`
-                : "Out of Stock"}
+              {product.stock > 0 ? `In Stock` : "Out of Stock"}
             </Badge>
           </div>
-          <p className="font-medium text-lg text-primary">${product.price}</p>
+          <p className="font-medium text-lg text-primary">FR {product.price}</p>
           <p className="text-sm text-gray-500 line-clamp-2">
             {product.description}
           </p>
@@ -131,7 +129,7 @@ export default async function ProductsPage() {
         </Link>
       </div>
       <div className="w-full">
-        <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {products?.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
