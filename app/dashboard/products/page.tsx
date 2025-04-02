@@ -4,14 +4,15 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image, { StaticImageData } from "next/image";
 import anImage from "@/public/templetes/Screenshot (123).png";
+import { supabaseClient } from "@/lib/db";
 
 interface Product {
   id: number;
   name: string;
   price: number;
   description: string;
-  status: string;
-  image: StaticImageData | string;
+  stock: number;
+  images: (StaticImageData | string)[];
 }
 
 // Sample product data (replace with real data later)
@@ -21,39 +22,39 @@ const sampleProducts = [
     name: "Sample Product 1",
     price: 99.99,
     description: "High-quality product description goes here...",
-    status: "In Stock",
-    image: anImage,
+    stock: 10,
+    images: [anImage],
   },
   {
     id: 2,
     name: "Sample Product 1",
     price: 99.99,
     description: "High-quality product description goes here...",
-    status: "In Stock",
-    image: anImage,
+    stock: 10,
+    images: [anImage],
   },
   {
     id: 3,
     name: "Sample Product 1",
     price: 99.99,
     description: "High-quality product description goes here...",
-    status: "Out Stock",
-    image: anImage,
+    stock: 0,
+    images: [anImage],
   },
   // ... more products
 ];
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow w-full max-w-[350px] h-[400px]">
+    <Card className="hover:shadow-lg transition-shadow flex-grow basis-[280px] max-w-[300px] h-[400px]">
       <CardContent className="px-4 h-full">
-        <div className="relative w-full h-[150px] mb-4">
+        <div className="relative w-full h-[150px] mb-4 aspect-[4/3]">
           <Image
-            src={product.image}
+            src={product.images[0] || anImage}
             alt={product.name}
-            sizes="(max-width: 350px) 100vw"
+            sizes="(max-width: 300px) 100vw"
             fill
-            className="object-cover rounded-md"
+            className="object-contain rounded-md"
           />
         </div>
         <div className="space-y-2">
@@ -62,13 +63,14 @@ function ProductCard({ product }: { product: Product }) {
             <Badge
               variant="secondary"
               className={
-                product.status === "In Stock"
+                product.stock > 0
                   ? "bg-green-500 hover:bg-green-600 cursor-pointer"
                   : "bg-red-500 hover:bg-red-600 cursor-pointer"
               }
             >
-              {" "}
-              {product.status}{" "}
+              {product.stock > 0
+                ? `In Stock`
+                : "Out of Stock"}
             </Badge>
           </div>
           <p className="font-medium text-lg text-primary">${product.price}</p>
@@ -89,7 +91,17 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const { data: products, error } = await supabaseClient
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching products:", error);
+    return <div>Error loading products</div>;
+  }
+
   return (
     <div className="p-6 w-full">
       <div className="flex justify-between items-center mb-6 w-full ">
@@ -118,9 +130,9 @@ export default function ProductsPage() {
           </Button>
         </Link>
       </div>
-      <div className="flex w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sampleProducts.map((product) => (
+      <div className="w-full">
+        <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+          {products?.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
