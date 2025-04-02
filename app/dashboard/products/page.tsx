@@ -51,6 +51,7 @@ function ProductCard({ product }: { product: Product }) {
           <Image
             src={product.image}
             alt={product.name}
+            sizes=""
             fill
             className="object-cover rounded-md"
           />

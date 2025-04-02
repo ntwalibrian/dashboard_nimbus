@@ -11,10 +11,20 @@ import {
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { format, subDays, subMonths, subYears } from "date-fns";
+import { supabaseClient } from "@/lib/db";
 
 function page() {
   const [selectedPeriod, setSelectedPeriod] = useState("4weeks");
   const [dateRange, setDateRange] = useState("");
+
+  async function fetchProducts() {
+    const { data, error } = await supabaseClient.from('products').select('*');
+    if (error) throw error;
+    console.log(data);
+  }
+  useEffect(() => {
+    fetchProducts()
+  }, [])
 
   useEffect(() => {
     const now = new Date();

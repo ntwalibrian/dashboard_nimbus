@@ -1,65 +1,125 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { ImageUpload } from '@/app/ui/image-upload'
-import * as RadioGroup from '@radix-ui/react-radio-group'
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ImageUpload } from "@/app/ui/image-upload";
+import { supabaseClient } from "@/lib/db";
 
 export default function CreateProduct() {
-  const [loading, setLoading] = useState(false)
-  const [images, setImages] = useState<string[]>([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
+  // const convertBlobToBase64 = async (blobUrl: string): Promise<string> => {
+  //   try {
+  //     // Fetch the blob
+  //     const response = await fetch(blobUrl);
+  //     const blob = await response.blob();
 
-    const formData = new FormData(e.currentTarget)
-    const data = {
-      name: formData.get('name'),
-      description: formData.get('description'),
-      tags: selectedTags,
-      price: parseFloat(formData.get('price') as string),
-      unit: formData.get('unit'),
-      images: images
-    }
-
+  //     // Convert blob to base64
+  //     return new Promise((resolve, reject) => {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => resolve(reader.result as string);
+  //       reader.onerror = reject;
+  //       reader.readAsDataURL(blob);
+  //     });
+  //   } catch (error) {
+  //     console.error("Error converting blob to base64:", error);
+  //     return "";
+  //   }
+  // };
+  const uploadImage = async (blobUrl: string): Promise<string> => {
     try {
-      // Add your API call here to save the product
-      // const response = await fetch('/api/products', {
-      //   method: 'POST',
-      //   body: JSON.stringify(data)
-      // })
-      
-      // Reset form or redirect after successful creation
+      const responce = await fetch(blobUrl);
+      const blob = await responce.blob();
+
+      // Generate a unique filename
+      const fileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}`;
+
+      const { data, error } = await supabaseClient.storage
+        .from("images")
+        .upload(`product-image/${fileName}`, blob, {
+          contentType: blob.type,
+        });
+
+      if (error) throw error;
+
+      const {
+        data: { publicUrl },
+      } = supabaseClient.storage
+        .from("images")
+        .getPublicUrl(`product-image/${fileName}`);
+
+      return publicUrl;
     } catch (error) {
-      console.error('Error creating product:', error)
-    } finally {
-      setLoading(false)
+      console.error("Error uploading image:", error);
+      throw error;
     }
-  }
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const imageUrls = await Promise.all(
+      images.map(async (blob) => await uploadImage(blob))
+    );
+    const data = {
+      name: formData.get("name"),
+      description: formData.get("description"),
+      tags: selectedTags,
+      price: parseFloat(formData.get("price") as string),
+      unit: formData.get("unit"),
+      images: imageUrls,
+    };
+
+    console.log(data);
+    console.log(data.images[0]);
+    try {
+      const { data: productData, error } = await supabaseClient
+        .from("products")
+        .insert([
+          {
+            name: formData.get("name"),
+            description: formData.get("description"),
+            images: imageUrls,
+          },
+        ])
+        .select();
+
+      if (error) throw error;
+
+      // Redirect to products page or show success message
+      window.location.href = "/dashboard/products";
+    } catch (error) {
+      console.error("Error creating product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div
+      className="max-w-4xl mx-auto h-auto min-h-fit p-6 bg-white
+     rounded-3xl"
+    >
       <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block mb-2">Product Name</label>
-          <Input 
-            name="name" 
-            required 
-            placeholder="Enter product name"
-          />
+          <Input name="name" required placeholder="Enter product name" />
         </div>
 
         <div>
           <label className="block mb-2">Description</label>
-          <Textarea 
-            name="description" 
-            required 
+          <Textarea
+            name="description"
+            required
             placeholder="Enter product description"
             rows={4}
           />
@@ -75,22 +135,24 @@ export default function CreateProduct() {
               "dairy",
               "grains",
               "beverages",
-              "snacks"
+              "snacks",
             ].map((tag) => (
               <div
                 key={tag}
                 className={`
                   relative flex items-center rounded-3xl border p-2 cursor-pointer
-                  ${selectedTags.includes(tag) 
-                    ? 'border-primary bg-primary/10' 
-                    : 'border-white hover:border-primary/50'}
+                  ${
+                    selectedTags.includes(tag)
+                      ? "border-primary bg-primary/10"
+                      : "border-white hover:border-primary/50"
+                  }
                 `}
                 onClick={() => {
-                  setSelectedTags(prev => 
+                  setSelectedTags((prev) =>
                     prev.includes(tag)
-                      ? prev.filter(t => t !== tag)
+                      ? prev.filter((t) => t !== tag)
                       : [...prev, tag]
-                  )
+                  );
                 }}
               >
                 <div className="flex w-full items-center justify-between">
@@ -111,43 +173,35 @@ export default function CreateProduct() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block mb-2">Price per Unit</label>
-            <Input 
-              name="price" 
-              type="number" 
-              required 
-              min="0" 
+            <Input
+              name="price"
+              type="number"
+              required
+              min="0"
               step="0.01"
               placeholder="0.00"
             />
           </div>
-          
+
           <div>
             <label className="block mb-2">Unit</label>
-            <Input 
-              name="unit" 
-              required 
-              placeholder="e.g., kg, piece, dozen"
-            />
+            <Input name="unit" required placeholder="e.g., kg, piece, dozen" />
           </div>
         </div>
 
         <div>
           <label className="block mb-2">Product Images (up to 7)</label>
-          <ImageUpload 
-            value={images} 
+          <ImageUpload
+            value={images}
             onChange={(urls) => setImages(urls)}
             maxImages={7}
           />
         </div>
 
-        <Button 
-          type="submit" 
-          disabled={loading}
-          className="w-full"
-        >
-          {loading ? 'Creating...' : 'Create Product'}
+        <Button type="submit" className="w-full">
+          {loading ? "Creating..." : "Create Product"}
         </Button>
       </form>
     </div>
-  )
+  );
 }
