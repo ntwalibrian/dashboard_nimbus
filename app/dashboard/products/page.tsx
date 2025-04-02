@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Image, {StaticImageData} from "next/image";
-import anImage from "@/public/templetes/Screenshot (123).png"
+import Image, { StaticImageData } from "next/image";
+import anImage from "@/public/templetes/Screenshot (123).png";
 
 interface Product {
   id: number;
@@ -37,7 +37,7 @@ const sampleProducts = [
     name: "Sample Product 1",
     price: 99.99,
     description: "High-quality product description goes here...",
-    status: "In Stock",
+    status: "Out Stock",
     image: anImage,
   },
   // ... more products
@@ -45,13 +45,13 @@ const sampleProducts = [
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardContent className="px-4">
-        <div className="relative w-full h-30 mb-4">
+    <Card className="hover:shadow-lg transition-shadow w-full max-w-[350px] h-[400px]">
+      <CardContent className="px-4 h-full">
+        <div className="relative w-full h-[150px] mb-4">
           <Image
             src={product.image}
             alt={product.name}
-            sizes=""
+            sizes="(max-width: 350px) 100vw"
             fill
             className="object-cover rounded-md"
           />
@@ -59,7 +59,10 @@ function ProductCard({ product }: { product: Product }) {
         <div className="space-y-2">
           <div className="flex justify-between items-start">
             <h3 className="font-semibold text-lg">{product.name}</h3>
-            <Badge variant="secondary">{product.status}</Badge>
+            <Badge 
+              variant="secondary"
+              className={product.status === "In Stock" ? "bg-green-500 hover:bg-green-600 cursor-pointer" : "bg-red-500 hover:bg-red-600 cursor-pointer"}
+            > {product.status} </Badge>
           </div>
           <p className="font-medium text-lg text-primary">${product.price}</p>
           <p className="text-sm text-gray-500 line-clamp-2">

@@ -104,13 +104,16 @@ export default function CreateProduct() {
 
   return (
     <div
-      className="max-w-7xl mx-auto h-auto min-h-fit p-6 bg-white
+      className="max-w-7xl mx-auto mb-auto mt-auto h-auto min-h-fit p-6 bg-white
      rounded-3xl"
     >
       <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
 
-      <form onSubmit={handleSubmit}  className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
-        <div className="space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full"
+      >
+        <div className="space-y-6 flex flex-col min-h-full">
           <div>
             <label className="block mb-2">Product Name</label>
             <Input name="name" required placeholder="Enter product name" />
@@ -193,6 +196,10 @@ export default function CreateProduct() {
               />
             </div>
           </div>
+          <div className="flex-grow"></div>
+          <Button type="submit" className="w-full">
+            {loading ? "Creating..." : "Create Product"}
+          </Button>
         </div>
         <div className="space-y-6">
           <label className="block mb-2">Product Images (up to 7)</label>
@@ -202,10 +209,6 @@ export default function CreateProduct() {
             maxImages={7}
           />
         </div>
-
-        <Button type="submit" className="w-full">
-          {loading ? "Creating..." : "Create Product"}
-        </Button>
       </form>
     </div>
   );
