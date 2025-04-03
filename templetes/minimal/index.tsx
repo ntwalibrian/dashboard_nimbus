@@ -1,9 +1,9 @@
-"use client"
-import { useState } from 'react';
-import { createContext } from 'react';
-import Home from './home';
-import Store from './store';
-import CartCheckout from './cartCheckout';
+"use client";
+import { useState, useEffect } from "react";
+import { createContext } from "react";
+import Home from "./home";
+import Store from "./store";
+import CartCheckout from "./cartCheckout";
 
 // Define product type
 export type Product = {
@@ -40,43 +40,56 @@ const products: Product[] = [
     name: "Minimalist Watch",
     price: 99.99,
     image: "/api/placeholder/300/300",
-    description: "A sleek, minimalist watch with a leather strap."
+    description: "A sleek, minimalist watch with a leather strap.",
   },
   {
     id: 2,
     name: "Black T-Shirt",
     price: 29.99,
     image: "/api/placeholder/300/300",
-    description: "Premium cotton black t-shirt, perfect for any occasion."
+    description: "Premium cotton black t-shirt, perfect for any occasion.",
   },
   {
     id: 3,
     name: "Grey Sneakers",
     price: 79.99,
     image: "/api/placeholder/300/300",
-    description: "Comfortable grey sneakers with white soles."
+    description: "Comfortable grey sneakers with white soles.",
   },
   {
     id: 4,
     name: "White Ceramic Mug",
     price: 19.99,
     image: "/api/placeholder/300/300",
-    description: "Elegant white ceramic mug for your morning coffee."
-  }
+    description: "Elegant white ceramic mug for your morning coffee.",
+  },
 ];
 
-export default function Index() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'store' | 'cart'>('home');
+export default function Index({
+  initialPage = "home",
+}: {
+  initialPage?: "home" | "store" | "cart";
+}) {
+  const [currentPage, setCurrentPage] = useState<"home" | "store" | "cart">(
+    initialPage
+  );
   const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Update currentPage when initialPage changes
+  useEffect(() => {
+    setCurrentPage(initialPage);
+  }, [initialPage]);
 
   // Cart functions
   const addToCart = (product: Product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.product.id === product.id);
+    setCart((prevCart) => {
+      const existingItem = prevCart.find(
+        (item) => item.product.id === product.id
+      );
       if (existingItem) {
-        return prevCart.map(item => 
-          item.product.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 } 
+        return prevCart.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
@@ -86,7 +99,9 @@ export default function Index() {
   };
 
   const removeFromCart = (productId: number) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.product.id !== productId)
+    );
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
@@ -94,29 +109,27 @@ export default function Index() {
       removeFromCart(productId);
       return;
     }
-    
-    setCart(prevCart => 
-      prevCart.map(item => 
-        item.product.id === productId 
-          ? { ...item, quantity } 
-          : item
+
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.product.id === productId ? { ...item, quantity } : item
       )
     );
   };
 
   // Navigation function
-  const navigate = (page: 'home' | 'store' | 'cart') => {
+  const navigate = (page: "home" | "store" | "cart") => {
     setCurrentPage(page);
   };
 
   // Render the current page
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case "home":
         return <Home navigate={navigate} featuredProduct={products[0]} />;
-      case 'store':
+      case "store":
         return <Store navigate={navigate} products={products} />;
-      case 'cart':
+      case "cart":
         return <CartCheckout navigate={navigate} />;
       default:
         return <Home navigate={navigate} featuredProduct={products[0]} />;
@@ -124,10 +137,10 @@ export default function Index() {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
-      <div className="min-h-screen bg-white">
-        {renderPage()}
-      </div>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, updateQuantity }}
+    >
+      <div className="min-h-screen bg-white">{renderPage()}</div>
     </CartContext.Provider>
   );
 }
