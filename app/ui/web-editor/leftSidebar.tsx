@@ -12,9 +12,9 @@ export default function LeftSidebar() {
     "Footer",
   ]);
   const [pages, setPages] = useState(["Home", "About Us", "Contact"]);
-  const [isSectionsVisible, setSectionsVisible] = useState(true);
-  const [isAssetsVisible, setAssetsVisible] = useState(true);
-  const [isPagesVisible, setPagesVisible] = useState(true);
+  const [isSectionsVisible, setSectionsVisible] = useState(false);
+  const [isAssetsVisible, setAssetsVisible] = useState(false);
+  const [isPagesVisible, setPagesVisible] = useState(false);
 
   // Function to add a new section
   const addSection = () => {
@@ -42,14 +42,21 @@ export default function LeftSidebar() {
             onClick={() => setPagesVisible(!isPagesVisible)}
             className="text-gray-500 hover:text-black"
           >
-            {isPagesVisible ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {isPagesVisible ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
           </button>
         </div>
 
         {isPagesVisible && (
           <div className="space-y-2 pl-4 p-2 rounded">
             {pages.map((page, index) => (
-              <div key={index} className="p-1 text-gray-600 text-sm hover:text-black">
+              <div
+                key={index}
+                className="p-1 text-gray-600 text-sm hover:text-black"
+              >
                 {page}
               </div>
             ))}
@@ -74,14 +81,21 @@ export default function LeftSidebar() {
             onClick={() => setSectionsVisible(!isSectionsVisible)}
             className="text-gray-500 hover:text-black"
           >
-            {isSectionsVisible ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {isSectionsVisible ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
           </button>
         </div>
 
         {isSectionsVisible && (
           <div className="space-y-2 pl-4 p-2 rounded">
             {sections.map((section, index) => (
-              <div key={index} className="p-1 text-gray-600 text-sm hover:text-black">
+              <div
+                key={index}
+                className="p-1 text-gray-600 text-sm hover:text-black"
+              >
                 {section}
               </div>
             ))}
@@ -106,21 +120,29 @@ export default function LeftSidebar() {
             onClick={() => setAssetsVisible(!isAssetsVisible)}
             className="text-gray-500 hover:text-black"
           >
-            {isAssetsVisible ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {isAssetsVisible ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
           </button>
         </div>
 
         {isAssetsVisible && (
           <div className="space-y-2 pl-4 p-2 rounded">
-            <div className="p-1 text-gray-600 text-sm hover:text-black">Button</div>
-            <div className="p-1 text-gray-600 text-sm hover:text-black">Image</div>
-            <div className="p-1 text-gray-600 text-sm hover:text-black">Text Box</div>
+            <div className="p-1 text-gray-600 text-sm hover:text-black">
+              Button
+            </div>
+            <div className="p-1 text-gray-600 text-sm hover:text-black">
+              Image
+            </div>
+            <div className="p-1 text-gray-600 text-sm hover:text-black">
+              Text Box
+            </div>
           </div>
-        )} 
+        )}
         {/* ibi ni filler nibindi byose biri hejuru */}
       </div>
     </div>
   );
 }
-
-
