@@ -7,7 +7,7 @@ import anImage from "@/public/templetes/Screenshot (123).png";
 import { supabaseClient } from "@/lib/db";
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   price: number;
   description: string;
@@ -78,9 +78,11 @@ function ProductCard({ product }: { product: Product }) {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between">
-        <Button variant="outline" size="sm" className="cursor-pointer">
-          Edit
-        </Button>
+        <Link href={`/dashboard/products/${product.id}/edit`}>
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            Edit
+          </Button>
+        </Link>
         <Button variant="default" size="sm" className="cursor-pointer">
           View Details
         </Button>
@@ -128,7 +130,7 @@ export default async function ProductsPage() {
           </Button>
         </Link>
       </div>
-      <div className="w-full">
+      <div className="w-full ">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {products?.map((product) => (
             <ProductCard key={product.id} product={product} />
