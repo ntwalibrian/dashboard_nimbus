@@ -13,24 +13,6 @@ export default function CreateProduct() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // const convertBlobToBase64 = async (blobUrl: string): Promise<string> => {
-  //   try {
-  //     // Fetch the blob
-  //     const response = await fetch(blobUrl);
-  //     const blob = await response.blob();
-
-  //     // Convert blob to base64
-  //     return new Promise((resolve, reject) => {
-  //       const reader = new FileReader();
-  //       reader.onloadend = () => resolve(reader.result as string);
-  //       reader.onerror = reject;
-  //       reader.readAsDataURL(blob);
-  //     });
-  //   } catch (error) {
-  //     console.error("Error converting blob to base64:", error);
-  //     return "";
-  //   }
-  // };
   const uploadImage = async (blobUrl: string): Promise<string> => {
     try {
       const responce = await fetch(blobUrl);
